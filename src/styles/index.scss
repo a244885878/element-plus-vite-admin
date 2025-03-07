@@ -1,0 +1,50 @@
+@use "./var.scss";
+@use "./element-plus.scss";
+@use "./transition.scss";
+
+* {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 自定义滚动条样式 */
+* {
+  --scrollbar-width: 8px;
+  --scrollbar-thumb-color: #c1c1c1;
+  --scrollbar-thumb-hover-color: #a8a8a8;
+}
+
+/* 整体滚动条容器 */
+*::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+}
+
+/* 滚动条轨道 */
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: var(--scrollbar-width);
+}
+
+/* 滚动条滑块 */
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: var(--scrollbar-width);
+  transition: background-color 0.2s;
+}
+
+/* 鼠标悬停在滚动条上时的滑块 */
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover-color);
+}
+
+/* 滚动条按钮（上下箭头）*/
+*::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* 滚动条角落 */
+*::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
