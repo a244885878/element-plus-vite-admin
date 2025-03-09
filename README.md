@@ -1,1 +1,1 @@
-## 新法禅项目微前端基座
+## Element-plus + Vite + Vue3
