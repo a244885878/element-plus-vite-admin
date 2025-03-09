@@ -1,7 +1,7 @@
 import { reactive } from "vue"
 import router, { resetRouter } from "@/router"
 import { removeToken } from "@/utils/auth"
-import _ from "lodash"
+import { cloneDeep } from "lodash"
 
 export type Menu = {
   path: string
@@ -60,8 +60,8 @@ const setDynamicViews = (menus: Menu[]) => {
 export default function () {
   const setMenuData = async (menu: Menu[]) => {
     store.menuData = setDynamicViews([
-      ..._.cloneDeep(constantRoutes),
-      ..._.cloneDeep(menu)
+      ...cloneDeep(constantRoutes),
+      ...cloneDeep(menu)
     ])
     for (let i = 0; i < store.menuData?.length; i++) {
       const v = store.menuData[i] as any

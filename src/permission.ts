@@ -25,7 +25,7 @@ router.beforeEach(
     document.title = getPageTitle(to.meta.title)
 
     const token = getToken()
-    const { setMenuData, store } = useStore()
+    const { setMenuData, store, logout } = useStore()
 
     if (token) {
       if (to.path === "/login") {
@@ -39,7 +39,8 @@ router.beforeEach(
             await setMenuData(dynamicRouter)
             next({ ...to, replace: true })
           } catch (error) {
-            ElMessage.error("出现错误,访问失败,请重新登录")
+            ElMessage.error("出现错误，请重新登录~")
+            logout()
           }
         }
       }
