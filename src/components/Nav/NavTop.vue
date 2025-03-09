@@ -1,7 +1,14 @@
 <template>
   <div class="nav-top-box">
-    <el-icon size="20" color="#303133" class="fold-icon"><Fold /></el-icon>
-    <el-breadcrumb separator="/">
+    <el-icon
+      size="20"
+      color="#303133"
+      class="fold-icon"
+      :class="store.collapse ? 'fold' : ''"
+      @click="setCollapse()"
+      ><Fold
+    /></el-icon>
+    <el-breadcrumb separator="/" v-if="store.currentSize !== 'xs'">
       <transition-group name="breadcrumb">
         <template v-for="(item, index) in routeHierarchy" :key="index">
           <el-breadcrumb-item
@@ -17,7 +24,7 @@
       <el-dropdown class="dropdown">
         <div class="dropdown-box">
           <el-avatar :icon="UserFilled" :size="30" />
-          <span class="user-name">{{ userInfo?.username }}</span>
+          <span class="user-name">{{ store.userInfo?.username }}</span>
         </div>
         <template #dropdown>
           <el-dropdown-menu>
@@ -27,6 +34,7 @@
       </el-dropdown>
     </div>
   </div>
+  <DrawerMenu v-model:show="store.drawerMenuShow"></DrawerMenu>
 </template>
 
 <script setup lang="ts">
@@ -34,11 +42,9 @@ import { useRoute, type RouteLocationMatched } from "vue-router"
 import { watch, ref } from "vue"
 import { UserFilled } from "@element-plus/icons-vue"
 import useStore from "@/store"
+import DrawerMenu from "@/components/DrawerMenu/index.vue"
 
-const {
-  store: { userInfo },
-  logout
-} = useStore()
+const { store, logout, setCollapse } = useStore()
 const route = useRoute()
 const routeHierarchy = ref<RouteLocationMatched[]>([])
 
@@ -63,6 +69,11 @@ watch(
   .fold-icon {
     cursor: pointer;
     margin-right: 15px;
+    transition: var(--base-transition);
+  }
+
+  .fold {
+    transform: rotate(180deg);
   }
 
   :deep(.el-breadcrumb__inner.is-link) {

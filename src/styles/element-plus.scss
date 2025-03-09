@@ -31,8 +31,7 @@ $popup-bg-color: #001020 !important;
   color: $active-color;
 }
 
-/* 选中菜单项左侧装饰条 */
-.el-menu-item.is-active::before {
+@mixin isActiveLine {
   content: "";
   position: absolute;
   left: 0;
@@ -40,6 +39,10 @@ $popup-bg-color: #001020 !important;
   bottom: 0;
   width: 2px;
   background: $active-line-color;
+}
+/* 选中菜单项左侧装饰条 */
+.el-menu-item.is-active::before {
+  @include isActiveLine();
 }
 
 // 整体背景色
@@ -57,19 +60,28 @@ $popup-bg-color: #001020 !important;
   background: $bg-color;
 }
 
-/* 子菜单项悬停样式 */
+/* 子菜单项弹出层悬停样式 */
 .el-menu--popup .el-menu-item:hover {
   background-color: $popup-bg-color;
   color: $active-color;
 }
 
-/* 子菜单项选中样式 */
+/* 子菜单项弹出层选中样式 */
 .el-menu--popup .el-menu-item.is-active {
   background-color: $bg-color;
-  border-left: 2px solid $active-line-color;
 }
 
 // el-dropdown删除悬停的黑边
 .el-tooltip__trigger:focus-visible {
   outline: unset;
+}
+
+// 子菜单项弹出层选中时父级同时选中样式
+.el-menu--collapse .el-sub-menu.is-active .el-sub-menu__title:before,
+.el-menu-item.is-active:before {
+  @include isActiveLine();
+}
+
+.No_padding_drawer {
+  padding: 0 !important;
 }

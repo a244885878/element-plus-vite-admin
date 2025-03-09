@@ -1,6 +1,7 @@
+// 面包屑
 .breadcrumb-enter-active,
 .breadcrumb-leave-active {
-  transition: all 0.3s;
+  transition: var(--base-transition);
 }
 
 .breadcrumb-enter,
@@ -10,9 +11,41 @@
 }
 
 .breadcrumb-move {
-  transition: all 0.3s;
+  transition: var(--base-transition);
 }
 
 .breadcrumb-leave-active {
   position: absolute;
+}
+
+// logo
+.slide-left-enter-active {
+  transition: var(--base-transition);
+}
+.slide-left-enter-from {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+.slide-left-leave-active {
+  transition: var(--base-transition);
+}
+.slide-left-leave-to {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+/* 折叠时的进入动画 */
+.slide-right-enter-active {
+  transition: var(--base-transition);
+}
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.slide-right-leave-active {
+  transition: var(--base-transition);
+}
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translateX(20px);
 }

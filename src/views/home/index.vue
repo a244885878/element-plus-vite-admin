@@ -1,9 +1,6 @@
 <template>
   <div class="home-box">
-    <div class="menu-box">
-      <Logo></Logo>
-      <Menu></Menu>
-    </div>
+    <MenuBox v-if="!['sm', 'xs'].includes(store.currentSize)"></MenuBox>
     <div class="views-box">
       <Nav></Nav>
       <el-scrollbar>
@@ -18,9 +15,13 @@
 </template>
 
 <script setup lang="ts">
-import Menu from "@/components/Menu/index.vue"
 import Nav from "@/components/Nav/index.vue"
-import Logo from "@/components/Logo/index.vue"
+import MenuBox from "@/components/MenuBox/index.vue"
+import useStore from "@/store"
+
+const { getCurrentSize, store } = useStore()
+
+getCurrentSize()
 </script>
 
 <style scoped lang="scss">
@@ -32,17 +33,11 @@ import Logo from "@/components/Logo/index.vue"
   background: #f2f3f5;
   overflow: hidden;
 
-  .menu-box {
-    width: var(--menu-width);
-    height: 100%;
-    background: var(--menu-bg-color);
-    flex-shrink: 0;
-  }
-
   .views-box {
     flex: 1;
     box-sizing: border-box;
     overflow: hidden;
+    transition: var(--base-transition);
 
     .el-scrollbar {
       width: 100%;

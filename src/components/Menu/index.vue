@@ -1,16 +1,16 @@
 <template>
-  <el-menu
-    router
-    :default-active="activePath"
-    :unique-opened="false"
-    :collapse="collapse"
-    :collapse-transition="false"
-    class="menu-box"
-  >
-    <el-scrollbar>
-      <MenuItem :menu-data="menuData"></MenuItem>
-    </el-scrollbar>
-  </el-menu>
+  <el-scrollbar>
+    <el-menu
+      router
+      :default-active="activePath"
+      :unique-opened="false"
+      :collapse="store.collapse"
+      :collapse-transition="false"
+      class="menu"
+    >
+      <MenuItem :menu-data="store.menuData"></MenuItem>
+    </el-menu>
+  </el-scrollbar>
 </template>
 
 <script setup lang="ts">
@@ -19,12 +19,9 @@ import MenuItem from "./MenuItem.vue"
 import { useRoute, type RouteLocationNormalizedLoaded } from "vue-router"
 import useStore from "@/store"
 
-const {
-  store: { menuData }
-} = useStore()
+const { store } = useStore()
 
 const route = useRoute()
-const collapse = ref(false)
 const activePath = ref("/")
 
 watch(
@@ -37,14 +34,14 @@ watch(
 </script>
 
 <style scoped lang="scss">
-.menu-box {
+.el-scrollbar {
+  height: calc(100% - var(--nav-height));
+}
+
+.menu {
   width: 100%;
   height: 100%;
-  transition: width 0.3s;
+  transition: var(--base-transition);
   border: 1px solid transparent;
-
-  .el-scrollbar {
-    height: calc(100% - var(--nav-height));
-  }
 }
 </style>

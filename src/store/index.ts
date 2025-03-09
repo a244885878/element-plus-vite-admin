@@ -33,13 +33,21 @@ type Store = {
   menuData: Menu[]
   userInfo: any
   auth: boolean
+  collapse: boolean // 折叠菜单状态|
+  currentSize: "lg" | "md" | "sm" | "xs"
+  drawerMenuShow: boolean
+  drawerMenuRender: boolean
 }
 const store = reactive<Store>({
   menuData: [],
   userInfo: {
     username: "admin"
   },
-  auth: false
+  auth: false,
+  collapse: false,
+  currentSize: "lg",
+  drawerMenuShow: false,
+  drawerMenuRender: false
 })
 
 // 递归过滤菜单
@@ -58,6 +66,34 @@ const setDynamicViews = (menus: Menu[]) => {
 }
 
 export default function () {
+  const getCurrentSize = () => {
+    const onResize = () => {
+      if (window.innerWidth <= 650) {
+        store.currentSize = "xs"
+        store.collapse = true
+      } else if (window.innerWidth <= 768) {
+        store.currentSize = "sm"
+        store.collapse = true
+      } else if (window.innerWidth <= 992) {
+        store.currentSize = "md"
+        store.collapse = true
+      } else {
+        store.currentSize = "lg"
+      }
+      store.drawerMenuRender = false
+    }
+    onResize()
+    window.addEventListener("resize", onResize)
+  }
+
+  const setCollapse = () => {
+    store.collapse = !store.collapse
+    if (["sm", "xs"].includes(store.currentSize) && !store.collapse) {
+      store.drawerMenuShow = true
+      store.drawerMenuRender = true
+    }
+  }
+
   const setMenuData = async (menu: Menu[]) => {
     store.menuData = setDynamicViews([
       ...cloneDeep(constantRoutes),
@@ -82,6 +118,8 @@ export default function () {
   return {
     store,
     setMenuData,
-    logout
+    logout,
+    setCollapse,
+    getCurrentSize
   }
 }
