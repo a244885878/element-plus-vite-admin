@@ -106,12 +106,16 @@ export default function () {
     store.auth = true
   }
 
+  const resetTagsView = () => {
+    localStorage.removeItem("tagsList")
+  }
+
   const logout = () => {
     removeToken()
     store.menuData = []
     store.auth = false
     resetRouter()
-    // resetTagsView()
+    resetTagsView()
     router.push("/login")
   }
 
