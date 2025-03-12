@@ -39,8 +39,10 @@ router.beforeEach(
             await setMenuData(dynamicRouter)
             next({ ...to, replace: true })
           } catch (error) {
+            console.error(error)
             ElMessage.error("出现错误，请重新登录~")
-            logout()
+            logout(false)
+            next({ path: "/login" })
           }
         }
       }
@@ -48,6 +50,7 @@ router.beforeEach(
       if (notLoginWhiteList.includes(to.path)) {
         next()
       } else {
+        logout(false)
         next({ path: "/login" })
       }
     }

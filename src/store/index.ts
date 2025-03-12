@@ -110,13 +110,15 @@ export default function () {
     localStorage.removeItem("tagsList")
   }
 
-  const logout = () => {
+  const logout = (routerChange = true) => {
     removeToken()
     store.menuData = []
     store.auth = false
     resetRouter()
     resetTagsView()
-    router.push("/login")
+    if (routerChange) {
+      router.push("/login")
+    }
   }
 
   return {
