@@ -26,5 +26,33 @@ export default [
         }
       }
     ]
+  },
+  {
+    path: "/flow",
+    name: "flow",
+    component: "/flow/index",
+    redirect: "/flow/create",
+    meta: {
+      title: "审批管理",
+      icon: "Edit"
+    },
+    children: [
+      {
+        path: "/flow/create",
+        name: "create",
+        component: "/flow/create/index",
+        meta: {
+          title: "创建审批"
+        }
+      },
+      {
+        path: "/flow/template",
+        name: "template",
+        component: "/flow/template/index",
+        meta: {
+          title: "审批模板"
+        }
+      }
+    ]
   }
 ]
