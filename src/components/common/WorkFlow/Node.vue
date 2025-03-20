@@ -9,7 +9,7 @@
 import GeneralNode from "./GeneralNode.vue"
 import BranchNode from "./BranchNode.vue"
 
-export interface Props {
+export interface NodeType {
   node: {
     nodeName: string
     nodeKey: string
@@ -21,17 +21,10 @@ export interface Props {
       | "conditionBranch"
       | "condition"
     data?: Record<string, any>
-    conditionNodes?: {
-      nodeName: Props["node"]["nodeName"]
-      nodeKey: Props["node"]["nodeKey"]
-      nodeType: Props["node"]["nodeType"]
-      priorityLevel: number
-      data?: Record<string, any>
-      childNodes?: Props["node"][]
-    }[]
+    childNodes?: NodeType["node"][]
   }
 }
-const { node } = defineProps<Props>()
+const { node } = defineProps<NodeType>()
 </script>
 
 <style scoped lang="scss"></style>

@@ -27,7 +27,9 @@
         <!-- 结束 -->
         <span v-else-if="node.nodeType === 'end'">结束</span>
         <!-- 删除按钮 -->
-        <el-icon size="15" color="#fff" class="close"><Close /></el-icon>
+        <el-icon size="15" color="#fff" class="close" @click="removeNode!(node)"
+          ><Close
+        /></el-icon>
       </div>
       <div class="content">
         <!-- 开始 -->
@@ -47,10 +49,13 @@
 </template>
 
 <script setup lang="ts">
-import type { Props } from "./Node.vue"
+import type { NodeType } from "./Node.vue"
 import AddNode from "./AddNode.vue"
+import { inject } from "vue"
 
-const { node } = defineProps<Props>()
+const removeNode = inject<(node: NodeType["node"]) => void>("removeNode")
+
+const { node } = defineProps<NodeType>()
 
 const returnNodeClass = () => {
   return node.nodeType

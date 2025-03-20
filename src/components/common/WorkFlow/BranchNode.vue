@@ -2,27 +2,38 @@
   <div class="branch-wrap">
     <div class="branch-box-wrap">
       <div class="branch-box">
-        <el-button type="success" plain round class="add-branch"
+        <el-button
+          type="success"
+          plain
+          round
+          class="add-branch"
+          @click="addCondition()"
           >添加条件</el-button
         >
         <div
           class="col-box"
-          v-for="(item, index) in node.conditionNodes"
+          v-for="(item, index) in node.childNodes"
           :key="item.nodeKey"
         >
           <div class="condition-node">
             <div class="condition-node-box">
               <div class="auto-judge">
                 <div class="title">
-                  <span class="node-title">条件{{ item.priorityLevel }} </span>
-                  <span class="priority-title"
-                    >优先级{{ item.priorityLevel }}
+                  <span
+                    class="node-title"
+                    v-if="index !== node.childNodes!.length - 1"
+                    >条件{{ index + 1 }}
                   </span>
+                  <span v-else class="node-title" style="color: #999"
+                    >默认条件
+                  </span>
+                  <span class="priority-title">优先级{{ index + 1 }} </span>
                   <el-icon
                     size="15"
                     color="#fff"
                     class="close"
-                    v-if="index !== node.conditionNodes!.length - 1"
+                    v-if="index !== node.childNodes!.length - 1"
+                    @click="delCondition(index)"
                     ><Close
                   /></el-icon>
                 </div>
@@ -30,12 +41,12 @@
                   class="content"
                   :style="{
                     paddingTop:
-                      index === node.conditionNodes!.length - 1 ? '5px' : '15px'
+                      index === node.childNodes!.length - 1 ? '5px' : '15px'
                   }"
                 >
                   <span
                     class="placeholder"
-                    v-if="index !== node.conditionNodes!.length - 1"
+                    v-if="index !== node.childNodes!.length - 1"
                     >请设置条件</span
                   >
                   <span v-else class="last-child-title">
@@ -46,13 +57,18 @@
               <AddNode :node="item"></AddNode>
             </div>
           </div>
+          <Node
+            v-for="child in item.childNodes"
+            :key="child.nodeKey"
+            :node="child"
+          ></Node>
           <!-- 隐藏左侧线条 -->
           <template v-if="index === 0">
             <div class="top-left-cover-line"></div>
             <div class="bottom-left-cover-line"></div>
           </template>
           <!-- 隐藏右侧线条 -->
-          <template v-if="index === node.conditionNodes!.length - 1">
+          <template v-if="index === node.childNodes!.length - 1">
             <div class="top-right-cover-line"></div>
             <div class="bottom-right-cover-line"></div>
           </template>
@@ -64,10 +80,36 @@
 </template>
 
 <script setup lang="ts">
-import type { Props } from "./Node.vue"
+import type { NodeType } from "./Node.vue"
 import AddNode from "./AddNode.vue"
+import Node from "./Node.vue"
+import { nanoid } from "nanoid"
+import { inject } from "vue"
 
-const { node } = defineProps<Props>()
+const { node } = defineProps<NodeType>()
+
+const removeNode = inject<(node: NodeType["node"]) => void>("removeNode")
+
+// 添加条件
+const addCondition = () => {
+  const { childNodes } = node
+  const childNodesLength = childNodes?.length
+  childNodes?.splice(childNodesLength! - 1, 0, {
+    nodeName: "",
+    nodeKey: nanoid(),
+    nodeType: "condition",
+    data: {}
+  })
+}
+
+// 删除条件
+const delCondition = (index: number) => {
+  const { childNodes } = node
+  childNodes?.splice(index, 1)
+  if (childNodes!.length <= 1) {
+    removeNode!(node)
+  }
+}
 </script>
 
 <style scoped lang="scss">
