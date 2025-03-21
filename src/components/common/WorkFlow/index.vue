@@ -51,7 +51,8 @@ const state = reactive<State>({
     {
       nodeName: "结束",
       nodeKey: nanoid(),
-      nodeType: "end"
+      nodeType: "end",
+      data: {}
     }
   ]
 })
@@ -115,7 +116,8 @@ const addNode = (node: NodeType["node"], list: List) => {
       {
         nodeName: "默认条件",
         nodeKey: nanoid(),
-        nodeType: "condition"
+        nodeType: "condition",
+        data: {}
       }
     ]
   }

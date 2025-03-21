@@ -20,7 +20,7 @@ export interface NodeType {
       | "send"
       | "conditionBranch"
       | "condition"
-    data?: Record<string, any>
+    data: Record<string, any>
     childNodes?: NodeType["node"][]
   }
 }

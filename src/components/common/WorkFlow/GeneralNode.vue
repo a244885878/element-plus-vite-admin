@@ -1,8 +1,8 @@
 <template>
   <div class="node-wrap">
-    <div class="node-wrap-box" :class="returnNodeClass()">
+    <div class="node-wrap-box" :class="returnNodeClass()" @click="handleNode()">
       <div class="title">
-        <!-- 开始、审核/图标 -->
+        <!-- 开始|审核-图标 -->
         <el-icon
           size="12"
           color="#fff"
@@ -18,27 +18,26 @@
           v-else-if="['send'].includes(node.nodeType)"
           ><Promotion
         /></el-icon>
-        <!-- 开始/标题 -->
-        <span v-if="node.nodeType === 'start'">发起人</span>
-        <!-- 审核/标题 -->
-        <span v-else-if="node.nodeType === 'audit'">审核人</span>
-        <!-- 抄送人/标题 -->
-        <span v-else-if="node.nodeType === 'send'">抄送人</span>
-        <!-- 结束 -->
-        <span v-else-if="node.nodeType === 'end'">结束</span>
+        <!-- 标题 -->
+        <span>{{ node.nodeName }}</span>
         <!-- 删除按钮 -->
         <el-icon size="15" color="#fff" class="close" @click="removeNode!(node)"
           ><Close
         /></el-icon>
       </div>
       <div class="content">
-        <!-- 开始 -->
-        <span v-if="node.nodeType === 'start'">所有人</span>
-        <!-- 审核/抄送人 -->
+        <!-- 开始-内容 -->
+        <span v-if="node.nodeType === 'start'">
+          <span v-if="node.data?.staffNameList?.length">
+            {{ node.data?.staffNameList.join("、") }}
+          </span>
+          <span v-else>所有人</span>
+        </span>
+        <!-- 审核|抄送人-内容 -->
         <template v-else-if="['audit', 'send'].includes(node.nodeType)">
           <span class="placeholder">请选择</span>
         </template>
-        <!-- 结束 -->
+        <!-- 结束-内容 -->
         <span v-else-if="node.nodeType === 'end'" class="placeholder"
           >流程结束</span
         >
@@ -46,19 +45,29 @@
     </div>
     <AddNode :node></AddNode>
   </div>
+  <StartDrawer v-model:show="startDrawerShow" :node></StartDrawer>
 </template>
 
 <script setup lang="ts">
 import type { NodeType } from "./Node.vue"
 import AddNode from "./AddNode.vue"
-import { inject } from "vue"
+import { inject, ref } from "vue"
+import StartDrawer from "./Drawer/Start.vue"
 
 const removeNode = inject<(node: NodeType["node"]) => void>("removeNode")
 
 const { node } = defineProps<NodeType>()
 
+const startDrawerShow = ref(false)
+
 const returnNodeClass = () => {
   return node.nodeType
+}
+
+const handleNode = () => {
+  if (node.nodeType === "start") {
+    startDrawerShow.value = true
+  }
 }
 </script>
 
