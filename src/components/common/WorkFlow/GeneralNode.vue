@@ -19,7 +19,7 @@
           ><Promotion
         /></el-icon>
         <!-- 标题 -->
-        <span>{{ node.nodeName }}</span>
+        <span class="title-text text-overflow">{{ node.nodeName }}</span>
         <!-- 删除按钮 -->
         <el-icon size="15" color="#fff" class="close" @click="removeNode!(node)"
           ><Close
@@ -33,8 +33,15 @@
           </span>
           <span v-else>所有人</span>
         </span>
-        <!-- 审核|抄送人-内容 -->
-        <template v-else-if="['audit', 'send'].includes(node.nodeType)">
+        <!-- 抄送人-内容 -->
+        <template v-else-if="['send'].includes(node.nodeType)">
+          <span v-if="node.data?.staffNameList?.length">
+            {{ node.data?.staffNameList.join("、") }}
+          </span>
+          <span v-else class="placeholder">发起人自选</span>
+        </template>
+        <!-- 审核人-内容 -->
+        <template v-else-if="['audit'].includes(node.nodeType)">
           <span class="placeholder">请选择</span>
         </template>
         <!-- 结束-内容 -->
@@ -46,6 +53,8 @@
     <AddNode :node></AddNode>
   </div>
   <StartDrawer v-model:show="startDrawerShow" :node></StartDrawer>
+  <SendDrawer v-model:show="sendDrawerShow" :node></SendDrawer>
+  <AuditDrawer v-model:show="auditDrawerShow" :node></AuditDrawer>
 </template>
 
 <script setup lang="ts">
@@ -53,12 +62,16 @@ import type { NodeType } from "./Node.vue"
 import AddNode from "./AddNode.vue"
 import { inject, ref } from "vue"
 import StartDrawer from "./Drawer/Start.vue"
+import SendDrawer from "./Drawer/Send.vue"
+import AuditDrawer from "./Drawer/Audit.vue"
 
 const removeNode = inject<(node: NodeType["node"]) => void>("removeNode")
 
 const { node } = defineProps<NodeType>()
 
 const startDrawerShow = ref(false)
+const sendDrawerShow = ref(false)
+const auditDrawerShow = ref(false)
 
 const returnNodeClass = () => {
   return node.nodeType
@@ -67,6 +80,12 @@ const returnNodeClass = () => {
 const handleNode = () => {
   if (node.nodeType === "start") {
     startDrawerShow.value = true
+  }
+  if (node.nodeType === "send") {
+    sendDrawerShow.value = true
+  }
+  if (node.nodeType === "audit") {
+    auditDrawerShow.value = true
   }
 }
 </script>
@@ -142,6 +161,10 @@ $bgcolor: #f6f8f9;
       display: flex;
       align-items: center;
       font-size: 12px;
+
+      .title-text {
+        display: inline-block;
+      }
 
       .close {
         position: absolute;

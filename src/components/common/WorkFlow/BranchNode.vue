@@ -17,12 +17,23 @@
         >
           <div class="condition-node">
             <div class="condition-node-box">
-              <div class="auto-judge">
+              <div
+                class="auto-judge"
+                @click="handleNode(item, index, node.childNodes!.length)"
+              >
                 <div class="title">
                   <span
                     class="node-title"
                     v-if="index !== node.childNodes!.length - 1"
-                    >条件{{ index + 1 }}
+                  >
+                    <span
+                      class="node-title-text text-overflow"
+                      v-if="!item.nodeName"
+                      >条件{{ index + 1 }}</span
+                    >
+                    <span v-else class="node-title-text text-overflow">{{
+                      item.nodeName
+                    }}</span>
                   </span>
                   <span v-else class="node-title" style="color: #999"
                     >默认条件
@@ -44,11 +55,14 @@
                       index === node.childNodes!.length - 1 ? '5px' : '15px'
                   }"
                 >
-                  <span
-                    class="placeholder"
-                    v-if="index !== node.childNodes!.length - 1"
-                    >请设置条件</span
-                  >
+                  <div v-if="index !== node.childNodes!.length - 1">
+                    <div
+                      v-if="item.data?.conditionGroupList?.length"
+                      class="condition-content"
+                      v-html="returnConditionContent(item.data)"
+                    ></div>
+                    <span v-else class="placeholder">请设置条件</span>
+                  </div>
                   <span v-else class="last-child-title">
                     未满足时其他条件时，将进入默认流程
                   </span>
@@ -77,6 +91,11 @@
       <AddNode :node></AddNode>
     </div>
   </div>
+  <ConditionDrawer
+    v-model:show="conditionDrawerShow"
+    :node="nodeItem"
+    :nodeIndex="nodeItemIndex"
+  ></ConditionDrawer>
 </template>
 
 <script setup lang="ts">
@@ -84,11 +103,45 @@ import type { NodeType } from "./Node.vue"
 import AddNode from "./AddNode.vue"
 import Node from "./Node.vue"
 import { nanoid } from "nanoid"
-import { inject } from "vue"
+import { inject, ref } from "vue"
+import ConditionDrawer from "./Drawer/Condition.vue"
+import { operatorOptions } from "./Drawer/data"
 
 const { node } = defineProps<NodeType>()
 
 const removeNode = inject<(node: NodeType["node"]) => void>("removeNode")
+
+const nodeItem = ref<NodeType["node"]>({
+  nodeName: "",
+  nodeKey: "",
+  nodeType: "condition",
+  data: {}
+})
+const nodeItemIndex = ref(0)
+const conditionDrawerShow = ref(false)
+
+// 格式化条件内容
+const returnConditionContent = (data: any) => {
+  let content = ""
+  if (data?.conditionGroupList?.length) {
+    for (let i = 0; i < data.conditionGroupList.length; i++) {
+      const v = data.conditionGroupList[i]
+      if (i > 0) {
+        content += `</br><span class="or">或</span></br>`
+      }
+      for (let j = 0; j < v.length; j++) {
+        if (j > 0) {
+          content += `<span class="also">且</span>`
+        }
+        const v2 = v[j]
+        content += `<span>${v2.label}</span>`
+        content += `<span class="operator">${operatorOptions.find(o => o.value === v2.operator)?.label}</span>`
+        content += `<span>${v2.value}</span>`
+      }
+    }
+  }
+  return content
+}
 
 // 添加条件
 const addCondition = () => {
@@ -109,6 +162,18 @@ const delCondition = (index: number) => {
   if (childNodes!.length <= 1) {
     removeNode!(node)
   }
+}
+
+const handleNode = (
+  item: NodeType["node"],
+  index: number,
+  childNodesLength: number
+) => {
+  // 默认条件不可编辑
+  if (index === childNodesLength - 1) return
+  nodeItem.value = item
+  nodeItemIndex.value = index
+  conditionDrawerShow.value = true
 }
 </script>
 
@@ -255,6 +320,11 @@ $bgcolor: #f6f8f9;
 
                 .node-title {
                   font-size: 12px;
+
+                  .node-title-text {
+                    display: inline-block;
+                    width: 70%;
+                  }
                 }
 
                 .priority-title {
@@ -279,6 +349,21 @@ $bgcolor: #f6f8f9;
                 padding-top: 15px;
                 width: 200px;
                 font-size: 12px;
+
+                .condition-content {
+                  color: #000;
+
+                  :deep(.operator) {
+                    color: var(--el-color-primary);
+                  }
+                  :deep(.also) {
+                    color: var(--el-color-warning);
+                    margin: 0 2px;
+                  }
+                  :deep(.or) {
+                    color: var(--el-color-success);
+                  }
+                }
 
                 .placeholder {
                   color: #999;

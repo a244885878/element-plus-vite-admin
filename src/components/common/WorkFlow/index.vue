@@ -1,6 +1,7 @@
 <template>
   <div class="sc-workflow-design">
     <div class="zoom-scale">
+      <el-button type="primary" @click="viewData()">查看数据</el-button>
       <el-button
         :icon="Plus"
         circle
@@ -151,6 +152,10 @@ const removeNode = (node: NodeType["node"]) => {
     const parentObj = findParentAndIndex(node.nodeKey, state.data)
     parentObj!.parent?.childNodes?.splice(parentObj!.index, 1)
   }
+}
+
+const viewData = () => {
+  console.log(state.data)
 }
 
 provide("addNode", addNode)
